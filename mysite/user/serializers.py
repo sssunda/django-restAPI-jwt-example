@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
-
+    new_password = serializers.CharField(required=False, write_only=True)
     def create(self, validated_data):
         user = User.objects.create(
             username=validated_data['username'],
@@ -16,15 +16,21 @@ class UserSerializer(serializers.ModelSerializer):
 
         return user
 
-    # def update(self, instance, validated_data):
-    #     instance.email = validated_data['email']
-    #     if validated_data['password'] != "":
-    #         instance.set_password(validated_data['password'])
-    #     instance.save()
+    def update(self, instance, pk, validated_data):
+        instance.email = validated_data['email']
 
-    #     return instance
+        if validated_data.get('new_password') != None:
+            instance.set_password(validated_data['new_password'])
 
+        instance.save()
+
+        return instance
+
+    def destroy(self, instance):
+        instance.delete()
+        
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password')
-        extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs = {'password': {'write_only': True},
+        'new_password' : {'write_only': True}}
+        fields = ('id', 'username', 'email', 'password', 'new_password')
