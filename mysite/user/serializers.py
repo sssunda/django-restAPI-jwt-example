@@ -28,9 +28,12 @@ class UserSerializer(serializers.ModelSerializer):
 
     def destroy(self, instance):
         instance.delete()
-        
+
     class Meta:
         model = User
-        extra_kwargs = {'password': {'write_only': True},
-        'new_password' : {'write_only': True}}
+        extra_kwargs = {
+            'password': {'write_only': True},
+            'new_password' : {'write_only': True},
+            'email':{'required':False},
+        }
         fields = ('id', 'username', 'email', 'password', 'new_password')
