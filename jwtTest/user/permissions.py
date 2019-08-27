@@ -5,7 +5,6 @@ class IsLoggedInUserOrAdmin(permissions.BasePermission):
         return obj == request.user or request.user.is_staff
 
 class IsAdminUser(permissions.BasePermission):
-
     def has_permission(self, request, view):
         return request.user and request.user.is_staff
 
